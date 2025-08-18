@@ -16,9 +16,9 @@ class FavoritesPage extends StatelessWidget {
       return const Center(child: SmallCard());
     }
 
-    return const Scaffold(
-      // backgroundColor: Theme.of(context).colorScheme.primary,
-      body: ResponsiveLayout(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: const ResponsiveLayout(
         portrait: Portrait(), 
         landscape: Landscape(),
       ),

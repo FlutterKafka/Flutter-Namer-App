@@ -12,7 +12,7 @@ class Homepage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.primary,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -38,41 +38,20 @@ class Homepage extends StatelessWidget {
   Widget _buildLikeButton(MyAppState appState, ThemeData theme) {
     final isFavorite = appState.favorites.contains(appState.current);
 
-    return ElevatedButton.icon(
+    return ElevatedButton.icon( 
       onPressed: appState.toggleFavorite,
       icon: Icon(
+        isFavorite ? Icons.favorite : Icons.favorite_border,
         color: theme.colorScheme.tertiary,
-        isFavorite ? 
-        Icons.favorite : 
-        Icons.favorite_border,
       ),
-      label: Text(
-        'Like', 
-        style: theme.textTheme.labelLarge,
-      ),
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0, 
-          vertical: 8.0
-        ),
-      ),
+      label: Text('Like', style: theme.textTheme.labelLarge),
     );
   }
 
   Widget _buildNextButton(MyAppState appState, ThemeData theme) {
-    
     return ElevatedButton(
       onPressed: appState.getNext,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0, 
-          vertical: 8.0
-        ),
-      ),
-      child: Text(
-        'Next',
-        style: theme.textTheme.labelLarge,
-      ),
+      child: Text('Next', style: theme.textTheme.labelLarge),
     );
   }
 }

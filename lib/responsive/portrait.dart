@@ -12,7 +12,7 @@ class Portrait extends StatelessWidget {
     
     return SafeArea(
       child: Scaffold(
-        // backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: ListView(
           children: [
             for (var pair in appState.favorites)

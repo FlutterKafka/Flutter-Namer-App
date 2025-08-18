@@ -9,6 +9,7 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Text(
@@ -28,6 +29,7 @@ class SmallCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.primary,
       margin: const EdgeInsets.all(20),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -50,9 +52,9 @@ class TileCard extends StatelessWidget {
     final theme = Theme.of(context).colorScheme;
 
     return Card(
+      color: Theme.of(context).colorScheme.primary,
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        tileColor: theme.secondary,
         leading: ElevatedButton(
           onPressed: () {
             appState.removeFavorite(pair);

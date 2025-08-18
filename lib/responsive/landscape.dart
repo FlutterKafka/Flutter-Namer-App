@@ -12,7 +12,7 @@ class Landscape extends StatelessWidget {
     
     return SafeArea(
       child: Scaffold(
-        // backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: GridView.builder(
           gridDelegate: 
             const SliverGridDelegateWithMaxCrossAxisExtent(

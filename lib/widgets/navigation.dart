@@ -18,7 +18,7 @@ class _MyNavigationState extends State<Navigation> {
     return Scaffold(
       bottomNavigationBar: MediaQuery.of(context).size.width < 600
           ? NavigationBar(
-              backgroundColor: Theme.of(context).colorScheme.surface,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               selectedIndex: selectedIndex,
               onDestinationSelected: ((value) {
                 setState(() {
@@ -26,10 +26,13 @@ class _MyNavigationState extends State<Navigation> {
                 });
               }),
               destinations: const [
-                NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+                NavigationDestination(
+                  icon: Icon(Icons.home), 
+                  label: 'Home'
+                ),
                 NavigationDestination(
                   icon: Icon(Icons.favorite),
-                  label: 'Favorites',
+                  label: 'Favorites'
                 ),
               ],
             )
@@ -38,7 +41,7 @@ class _MyNavigationState extends State<Navigation> {
         children: [
           if (MediaQuery.of(context).size.width >= 600)
             NavigationRail(
-              backgroundColor: Theme.of(context).colorScheme.surface,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               selectedIndex: selectedIndex,
               onDestinationSelected: ((value) {
                 setState(() {
@@ -58,7 +61,7 @@ class _MyNavigationState extends State<Navigation> {
             ),
           Expanded(
             child: Container(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.surface,
               child: pages[selectedIndex],
             ),
           ),
