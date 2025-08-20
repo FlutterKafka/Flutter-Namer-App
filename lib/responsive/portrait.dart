@@ -9,18 +9,18 @@ class Portrait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: ListView(
-          children: [
-            for (var pair in appState.favorites)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TileCard(pair: pair),
-              )
-          ],
+        body: ListView.builder(
+          itemCount: appState.favorites.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TileCard(pair: appState.favorites[index])
+            );
+          },
         ),
       ),
     );
