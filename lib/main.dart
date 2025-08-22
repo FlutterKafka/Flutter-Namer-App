@@ -1,39 +1,20 @@
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:namer_app/theme/theme.dart';
 import 'package:english_words/english_words.dart';
 import 'package:namer_app/widgets/navigation.dart';
-import 'package:hive_ce_flutter/hive_flutter.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(WordPairAdapter());
-  await Hive.openBox("db");
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
-}
-
-class WordPairAdapter extends TypeAdapter<WordPair> {
-  @override
-  final int typeId = 0;
-
-  @override
-  WordPair read(BinaryReader reader) {
-    final first = reader.readString();
-    final second = reader.readString();
-    return WordPair(first, second);
-  }
-
-  @override
-  void write(BinaryWriter writer, WordPair obj) {
-    writer.writeString(obj.first);
-    writer.writeString(obj.second);
-  }
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
-  
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
@@ -51,30 +32,76 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
   var favorites = <WordPair>[];
-  final db = Hive.box("db");
+  late Future<Database> database;
 
   MyAppState() {
-    favorites = List<WordPair>.from(db.get("db") ?? []);
+    _initialize();
   }
 
-  void getNext() {
+  Future<void> _initialize() async {
+    await _initDatabase();
+    await _loadFavorites();
+  }
+  
+  Future<void> _initDatabase() async {
+    database = openDatabase(
+      join(await getDatabasesPath(), 'wordpair_database.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE favorites(first TEXT, second TEXT)',
+        );
+      },
+      version: 1,
+    );
+  }
+
+  Future<void> _loadFavorites() async {
+    favorites = await _getFavorites();
+    notifyListeners();
+  }
+
+  Future<void> getNext() async {
     current = WordPair.random();
     notifyListeners();
   }
 
-  void toggleFavorite() {
+  Future<void> toggleFavorite() async {
+    final db = await database;
     if (favorites.contains(current)) {
       favorites.remove(current);
+      await db.delete(
+        'favorites',
+        where: 'first = ? AND second = ?',
+        whereArgs: [current.first, current.second],
+      );
     } else {
       favorites.add(current);
+      await db.insert(
+        'favorites',
+        {'first': current.first, 'second': current.second},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     }
-    db.put("db", favorites);
     notifyListeners();
   }
 
-  void removeFavorite(WordPair pair) {
+  Future<void> removeFavorite(WordPair pair) async {
+    final db = await database;
     favorites.remove(pair);
-    db.put("db", favorites);
+    await db.delete(
+      'favorites',
+      where: 'first = ? AND second = ?',
+      whereArgs: [pair.first, pair.second],
+    );
     notifyListeners();
+  }
+
+  Future<List<WordPair>> _getFavorites() async {
+    final db = await database;
+    final List<Map<String, Object?>> favoriteMaps = await db.query('favorites');
+    return [
+      for (final {'first': first as String, 'second': second as String} in favoriteMaps)
+        WordPair(first, second),
+    ];
   }
 }
